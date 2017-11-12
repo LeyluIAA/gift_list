@@ -1,0 +1,38 @@
+@font-face {
+    font-family: merry;
+    src: url(merry.ttf);
+}
+
+@font-face {
+    font-family: snow;
+    src: url(snow.ttf);
+}
+
+@font-face {
+    font-family: always;
+    src: url(always.ttf);
+}
+
+html {
+    font-family: GillSans, Calibri, Trebuchet, sans-serif;
+  }
+
+h4 {
+  font-size: 2em;
+  font-family: merry, GillSans, Calibri;
+}
+
+li {
+  font-family: GillSans, Calibri;
+  font-size: 3em;
+}
+
+#title {
+  font-family: merry, GillSans, Calibri;
+  font-size: 3em;
+}
+
+.link_color {
+  font-family: always;
+  color: #ad1457;
+}
