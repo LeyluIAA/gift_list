@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="style.css">
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+    <script src="https://unpkg.com/vuefire/dist/vuefire.js"></script>
     <title>My christmas #2017</title>
   </head>
   <body class="pink lighten-5">
@@ -16,7 +19,7 @@
         <a href="#" id="title" class="brand-logo center">Mina, Aurélie & Florent</a>
       </div>
     </nav>
-    <div class="row">
+    <div class="row" id="demo">
       <div class="col s12">
         <ul class="collection with-header">
           <li class="collection-header"><h4>Mina</h4></li>
@@ -32,12 +35,102 @@
           <li class="collection-item"><div><a href="https://livre.fnac.com/a10826868/Camilla-Lackberg-La-sorciere?omnsearchpos=1" target="_blank" class="link_color">Le livre: La sorcière</a></div></li>
           <li class="collection-item"><div><a href="https://www.maccosmetics.fr/product/13854/52593/produits/maquillage/levres/rouge-a-levres/rouge-a-levres-retro-matte" target="_blank" class="link_color">Rouge à lèvres retro matte</a></div></li>
         </ul>
-      </div><div class="col s6">
+      </div>
+      <div class="col s6">
         <ul class="collection with-header">
           <li class="collection-header"><h4>Florent</h4></li>
-          <li class="collection-item"><div><a href="https://livre.fnac.com/a6449048/Elfes-Tome-05-Elfes-Ma-Yin?omnsearchpos=1" target="_blank" class="link_color">La BD: Elfes - Tome 5</a></div></li>
+          <!--<li v-for="task in tasks" class="collection-item task" :key="task['.key']""><div v-if="task.list === 'florent'"><a href="https://livre.fnac.com/a6449048/Elfes-Tome-05-Elfes-Ma-Yin?omnsearchpos=1" target="_blank" class="link_color">{{ task.text }}5</a></div></li>-->
+          <li v-for="task in tasks" class="collection-item task" :key="task['.key']" v-if="task.list === 'florent'">
+            <a v-bind:href="task.url" target="_blank" class="link_color">{{ task.text }}</a>
+            <button v-on:click="removeTask(task)">X</button>
+          </li>
         </ul>
       </div>
-    </div>
+
+
+
+  <!--<ol>
+    <li v-for="task in tasks" class="task" :key="task['.key']">
+      <span>{{ task.text }}</span>
+      <span>{{ task.url }}</span>
+      <span>{{ task.list }}</span>
+      <button v-on:click="removeTask(task)">X</button>
+    </li>
+  </ol>-->
+  <form id="add" v-on:submit.prevent="addTask">
+    <p>
+      <input name="addTask" type="radio" id="test1" value="mina" v-model="newTask.list"/>
+      <label for="test1">Mina</label>
+    </p>
+    <p>
+      <input name="addTask" type="radio" id="test2" value="aurelie" v-model="newTask.list"/>
+      <label for="test2">Aurelie</label>
+    </p>
+    <p>
+      <input name="addTask" type="radio" id="test3" value="florent" v-model="newTask.list"/>
+      <label for="test3">Florent</label>
+    </p>
+    <input type="text" name="addTask" v-model="newTask.text" placeholder="Nom du cadeau">
+    <input type="text" name="addTask" v-model="newTask.url" placeholder="URL du cadeau">
+    <input type="submit" value="Ajouter">
+  </form>
+</div>
+
+<script>
+// Replace abc with your Firebase domain (ex. vuejs-c86csa4)
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyDiEi93EVvH7YR5g23PNNI_Cmr5ePsZQZI",
+  authDomain: "giftlist-1a12c.firebaseapp.com",
+  databaseURL: "https://giftlist-1a12c.firebaseio.com",
+  projectId: "giftlist-1a12c",
+  storageBucket: "giftlist-1a12c.appspot.com",
+  messagingSenderId: "693813568430"
+};
+firebase.initializeApp(config);
+var tasksRef = firebase.database().ref('tasks');
+var app = new Vue({
+  el: '#demo',
+  data: {
+    newTask: {
+      text: '',
+      url: '',
+      list: ''
+    }
+  },
+  firebase: {
+    tasks: tasksRef
+  },
+  computed: {
+    validation: function () {
+      return {
+        text: !!this.newTask.text.trim(),
+        url: !!this.newTask.url.trim(),
+        list: !!this.newTask.list.trim()
+      }
+    },
+    isValid: function () {
+      var validation = this.validation
+      return Object.keys(validation).every(function (key) {
+        return validation[key]
+      })
+    }
+  },
+  methods: {
+    addTask: function () {
+      if (this.isValid) {
+        tasksRef.push(this.newTask);
+        this.newTask.text = '';
+        this.newTask.url = '';
+        this.newTask.list = '';
+      }
+    },
+    removeTask: function (task) {
+      tasksRef.child(task['.key']).remove();
+    }
+  }
+});
+</script>
+
   </body>
 </html>
