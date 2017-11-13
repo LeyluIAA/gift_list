@@ -17,14 +17,20 @@ html {
     font-family: GillSans, Calibri, Trebuchet, sans-serif;
   }
 
-h4 {
-  font-size: 2em;
+.collapsible-header {
+  padding: 30px 0 30px 0;
+  color: white;
   font-family: merry, GillSans, Calibri;
+  text-align: center;
+  font-size: 4em;
 }
 
-li {
-  font-family: GillSans, Calibri;
-  font-size: 3em;
+.collection-item {
+  background-color: #FAF7F5;
+}
+
+.btn {
+  font-size: 1em;
 }
 
 #title {
@@ -35,4 +41,5 @@ li {
 .link_color {
   font-family: always;
   color: #ad1457;
+  font-size: 2em;
 }
