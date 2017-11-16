@@ -26,7 +26,7 @@
             <div class="collapsible-body">
               <ul>
                 <li v-for="task in tasks" class="collection-item task" :key="task['.key']" v-if="task.list === 'mina'">
-                  <a v-bind:href="task.url" target="_blank" v-bind:class="{ over : task.isBooked }" class="link_color">{{ task.text }}</a>
+                  <a v-bind:href="task.url" target="_blank" v-bind:class="{ over : task.isBooked }" class="link_color">{{ task.text | cut }}</a>
                   <p class="btnalign">
                     <input type="checkbox" @click="book(task)" :id="task.text" v-model="task.isBooked" />
                     <label :for="task.text"></label>
@@ -134,11 +134,19 @@
       firebase: {
         tasks: tasksRef
       },
+      filters : {
+        cut: function (value) {
+          if (value.length > 30 ) {
+            return value.substr(0, 29) + '...';
+          } else {
+            return value;
+          }
+        }
+      },
       computed: {
         validation: function () {
           return {
             text: !!this.newTask.text.trim(),
-            url: !!this.newTask.url.trim(),
             list: !!this.newTask.list.trim()
           }
         },
