@@ -25,12 +25,12 @@
             <div class="collapsible-header pink darken-1">Mina</div>
             <div class="collapsible-body">
               <ul>
-                <li class="collection-item"><div><a href="https://www.amazon.fr/dp/B00IADJSLG/ref=cm_gf_ss_d_d_p_aBN_p0_qd4" target="_blank" class="link_color">Disney: les 50 Plus Belles Chansons</a></div></li>
-                <li class="collection-item"><div><a href="https://www.amazon.fr/dp/B019DWWU4O/ref=cm_gf_ss_d_d_p_aBN_p0_qd2" target="_blank" class="link_color">Kit de moulage d'empreintes de pieds et mains</a></div></li>
-                <li class="collection-item"><div><a href="https://www.amazon.fr/dp/B01J6O2EW2/ref=cm_gf_ss_d_d_p_aBN_p0_qd0" target="_blank" class="link_color">Jeu de Cubes Sérigraphiés</a></div></li>
                 <li v-for="task in tasks" class="collection-item task" :key="task['.key']" v-if="task.list === 'mina'">
-                  <a v-bind:href="task.url" target="_blank" class="link_color">{{ task.text }}</a>
-                  <button v-on:click="book(task)">x</button>
+                  <a v-bind:href="task.url" target="_blank" v-bind:class="{ over : task.isBooked }" class="link_color">{{ task.text }}</a>
+                  <p class="btnalign">
+                    <input type="checkbox" @click="book(task)" :id="task.text" v-model="task.isBooked" />
+                    <label :for="task.text"></label>
+                  </p>
                 </li>
               </ul>
             </div>
@@ -39,14 +39,11 @@
             <div class="collapsible-header pink darken-1">Aurélie</div>
             <div class="collapsible-body">
               <ul>
-                <li class="collection-item"><div><a href="https://livre.fnac.com/a10561606/Millenium-Tome-5-La-fille-qui-rendait-coup-pour-coup-David-Lagercrantz?omnsearchpos=1" target="_blank" class="link_color">Le livre: Millénium - Tome 5</a></div></li>
-                <li class="collection-item"><div><a href="https://livre.fnac.com/a10826868/Camilla-Lackberg-La-sorciere?omnsearchpos=1" target="_blank" class="link_color">Le livre: La sorcière</a></div></li>
-                <li class="collection-item"><div><a href="https://www.maccosmetics.fr/product/13854/52593/produits/maquillage/levres/rouge-a-levres/rouge-a-levres-retro-matte" target="_blank" class="link_color">Rouge à lèvres retro matte</a></div></li>
                 <li v-for="task in tasks" class="collection-item task" :key="task['.key']" v-if="task.list === 'aurelie'">
-                  <a v-bind:href="task.url" target="_blank" class="link_color">{{ task.text }}</a>
-                  <p>
-                    <input type="checkbox" @click="book(task)" id="test5" class="btnalign"/>
-                    <label for="test5">{{ task.isBooked ? 'réservé' : 'réserver' }}</label>
+                  <a v-bind:href="task.url" target="_blank" v-bind:class="{ over : task.isBooked }" class="link_color">{{ task.text }}</a>
+                  <p class="btnalign">
+                    <input type="checkbox" @click="book(task)" :id="task.text" v-model="task.isBooked"/>
+                    <label :for="task.text"></label>
                   </p>
                 </li>
               </ul>
@@ -57,8 +54,11 @@
             <div class="collapsible-body">
               <ul>
                 <li v-for="task in tasks" class="collection-item task" :key="task['.key']" v-if="task.list === 'florent'">
-                  <a v-bind:href="task.url" target="_blank" class="link_color">{{ task.text }}</a>
-                  <button v-on:click="book(task)">x</button>
+                  <a v-bind:href="task.url" target="_blank" v-bind:class="{ over : task.isBooked }" class="link_color">{{ task.text }}</a>
+                  <p class="btnalign">
+                    <input type="checkbox" @click="book(task)" :id="task.text" v-model="task.isBooked" />
+                    <label :for="task.text"></label>
+                  </p>
                 </li>
               </ul>
             </div>
@@ -128,7 +128,8 @@
           isBooked: false
         },
         activeButton: 'waves-effect waves-light btn btnalign',
-        disabledButton: 'disabled'
+        disabledButton: 'disabled',
+        checked: 'checked'
       },
       firebase: {
         tasks: tasksRef
@@ -138,8 +139,7 @@
           return {
             text: !!this.newTask.text.trim(),
             url: !!this.newTask.url.trim(),
-            list: !!this.newTask.list.trim(),
-            isBooked: !!this.newTask.isBooked
+            list: !!this.newTask.list.trim()
           }
         },
         isValid: function () {
@@ -152,6 +152,7 @@
       methods: {
         addTask: function () {
           if (this.isValid) {
+            this.newTask.isBooked = false;
             tasksRef.push(this.newTask);
             this.newTask.text = '';
             this.newTask.url = '';
@@ -163,9 +164,8 @@
           if (task.isBooked) {
             tasksRef.child(task['.key']).update({isBooked: false});
           } else {
-            tasksRef.child(task['.key']).update({ isBooked: true });            
+            tasksRef.child(task['.key']).update({isBooked: true});            
           }
-          console.error('isbooked', task.isBooked);
         }
       }
     });

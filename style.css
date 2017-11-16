@@ -44,13 +44,12 @@ html {
   font-size: 2em;
 }
 
-<<<<<<< HEAD
 .btnalign {
   position: relative;
   float: right;
   margin-right: 1%;
+  padding: 0.5em 1em 0em 1em !important;
 }
-=======
 /* fallback */
 @font-face {
   font-family: 'Material Icons';
@@ -74,4 +73,7 @@ html {
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
 }
->>>>>>> 4278a5c29f522d96b098aa0885c262313088d225
+
+.over {
+  text-decoration: line-through;
+}
