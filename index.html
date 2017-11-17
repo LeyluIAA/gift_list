@@ -26,7 +26,7 @@
             <div class="collapsible-body">
               <ul>
                 <li v-for="task in tasks" class="collection-item task" :key="task['.key']" v-if="task.list === 'mina'">
-                  <a v-bind:href="task.url" target="_blank" v-bind:class="{ over : task.isBooked }" class="link_color">{{ task.text | cut }}</a>
+                  <a v-bind:href="task.url" target="_blank" v-bind:class="{ over : task.isBooked }" class="link_color">{{ task.text}}</a>
                   <p class="btnalign">
                     <input type="checkbox" @click="book(task)" :id="task.text" v-model="task.isBooked" />
                     <label :for="task.text"></label>
@@ -40,7 +40,7 @@
             <div class="collapsible-body">
               <ul>
                 <li v-for="task in tasks" class="collection-item task" :key="task['.key']" v-if="task.list === 'aurelie'">
-                  <a v-bind:href="task.url" target="_blank" v-bind:class="{ over : task.isBooked }" class="link_color">{{ task.text }}</a>
+                  <a v-bind:href="task.url" target="_blank" v-bind:class="{ over : task.isBooked }" class="link_color">{{ task.text}}</a>
                   <p class="btnalign">
                     <input type="checkbox" @click="book(task)" :id="task.text" v-model="task.isBooked"/>
                     <label :for="task.text"></label>
@@ -54,7 +54,7 @@
             <div class="collapsible-body">
               <ul>
                 <li v-for="task in tasks" class="collection-item task" :key="task['.key']" v-if="task.list === 'florent'">
-                  <a v-bind:href="task.url" target="_blank" v-bind:class="{ over : task.isBooked }" class="link_color">{{ task.text }}</a>
+                  <a v-bind:href="task.url" target="_blank" v-bind:class="{ over : task.isBooked }" class="link_color">{{ task.text}}</a>
                   <p class="btnalign">
                     <input type="checkbox" @click="book(task)" :id="task.text" v-model="task.isBooked" />
                     <label :for="task.text"></label>
@@ -121,6 +121,8 @@
     var app = new Vue({
       el: '#demo',
       data: {
+        windowWidth: 0,
+        windowHeight: 0,
         newTask: {
           text: '',
           url: '',
@@ -136,11 +138,16 @@
       },
       filters : {
         cut: function (value) {
-          if (value.length > 30 ) {
-            return value.substr(0, 29) + '...';
+          if (this.windowWidth < 680) {
+            if (value.length > 30 ) {
+              return value.substr(0, 29) + '...';
+            } else {
+              return value;
+            }
           } else {
             return value;
           }
+          
         }
       },
       computed: {
@@ -156,6 +163,18 @@
             return validation[key]
           })
         }
+      },
+      mounted: function () { 
+        this.$nextTick(function() { 
+          window.addEventListener('resize', this.getWindowWidth);
+          window.addEventListener('resize',this.getWindowHeight);
+          this.getWindowWidth();
+          this.getWindowHeight();
+        })
+      },
+      beforeDestroy: function() {
+        window.removeEventListener('resize', this.getWindowWidth);
+        window.removeEventListener('resize', this.getWindowHeight);
       },
       methods: {
         addTask: function () {
@@ -174,6 +193,12 @@
           } else {
             tasksRef.child(task['.key']).update({isBooked: true});            
           }
+        },
+        getWindowWidth: function (event) {
+          this.windowWidth = document.documentElement.clientWidth;
+        },
+        getWindowHeight: function (event) {
+          this.windowHeight = document.documentElement.clientHeight;
         }
       }
     });
